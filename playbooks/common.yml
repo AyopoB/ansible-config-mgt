@@ -3,10 +3,10 @@
   hosts: webservers, nfs
   become: yes
   tasks:
-    - name: ensure wireshark is at the latest version
-      yum:
-        name: wireshark
-        state: latest
+  - name: ensure wireshark is at the latest version
+    yum:
+       name: wireshark
+       state: latest
 
 - name: update LB server, db
   hosts: lb,db
