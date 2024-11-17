@@ -1,0 +1,17 @@
+
+        ## Correct syntax. Check explanations in the troubleshooting section
+---
+- name: Collate variables from environment-specific file
+  include_vars:
+    file: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ inventory_file | basename | splitext | first }}.yml"
+        - dev.yml
+        - staging.yml
+        - prod.yml
+        - uat.yml
+      paths:
+        - "{{ playbook_dir }}/../env-vars"
+  tags:
+    - always
