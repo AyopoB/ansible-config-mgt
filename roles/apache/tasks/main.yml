@@ -1,20 +1,15 @@
 ---
-- name: Ensure Apache is started for UAT if enabled
-  service:
-    name: apache2
-    state: started
-    enabled: true
-  when:
-    - enable_apache_lb
-    - load_balancer_is_required
 
-- name: Stop Apache if not required
-  service:
-    name: apache2
+- name: Check if nginx is running
+  ansible.builtin.service_facts:
+                     
+- name: Stop and disable nginx if it is running
+  ansible.builtin.service:
+    name: nginx 
     state: stopped
-  when:
-    - not enable_apache_lb
-    - load_balancer_is_required
+    enabled: no
+  when: "'nginx' in services and services['nginx'].state == 'running'"
+  become: yes
 
 # Include variables and define needed variables.
 - name: Include OS-specific variables.
