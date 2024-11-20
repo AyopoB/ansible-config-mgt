@@ -1,42 +1,39 @@
 ---
----
-- name: Ensure Nginx is started for UAT if enabled
-  service:
-    name: nginx
-    state: started
-    enabled: true
-  when:
-    - enable_nginx_lb
-    - load_balancer_is_required
-    - lb_type =="nginx"
-
-- name: Stop Nginx if not required
-  service:
-    name: nginx
+- name: Check if Apache is running
+  ansible.builtin.service_facts:
+                     
+- name: Stop and disable Apache if it is running
+  ansible.builtin.service:
+    name: apache2 
     state: stopped
-  when:
-    - not enable_nginx_lb
-    - load_balancer_is_required
-    - lb_type =="nginx"
+    enabled: no
+  when: "'apache2' in services and services['apache2'].state == 'running'"
+  become: yes
+
 
 # Variable setup.
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_os_family }}.yml"
+  become: yes
 
 - name: Define nginx_user.
   set_fact:
     nginx_user: "{{ __nginx_user }}"
   when: nginx_user is not defined
+  become: yes
 
 # Setup/install tasks.
 - include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky' or ansible_os_family == 'AlmaLinux'
 
+
 - include_tasks: setup-Ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
 
+
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
+ 
 
 - include_tasks: setup-FreeBSD.yml
   when: ansible_os_family == 'FreeBSD'
@@ -52,6 +49,8 @@
 
 # Vhost configuration.
 - import_tasks: vhosts.yml
+  become: yes
+
 
 # Nginx setup.
 - name: Copy nginx configuration in place.
@@ -63,9 +62,12 @@
     mode: 0644
   notify:
     - reload nginx
+  become: yes
 
 - name: Ensure nginx service is running as configured.
   service:
     name: nginx
     state: "{{ nginx_service_state }}"
     enabled: "{{ nginx_service_enabled }}"
+  become: yes
+    
