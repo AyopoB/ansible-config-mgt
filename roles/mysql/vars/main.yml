@@ -1,5 +1,5 @@
 ---
-mysql_root_password: root
+mysql_root_password: ""
 mysql_databases:
   - name: tooling
     encoding: utf8
