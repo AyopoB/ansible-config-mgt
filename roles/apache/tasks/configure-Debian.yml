@@ -8,6 +8,7 @@
     mode: 0644
   with_items: "{{ apache_ports_configuration_items }}"
   notify: restart apache
+  become: yes
 
 - name: Enable Apache modules
   ansible.builtin.shell:
@@ -25,19 +26,19 @@
   
 - name: Insert load balancer configuration into Apache virtual host
   ansible.builtin.blockinfile:
-  path: /etc/apache2/sites-available/000-default.conf
-  block: |
-    <Proxy "balancer://mycluster">
-      BalancerMember http://172.31.26.143:80
-      BalancerMember http://172.31.18.71:80
-      ProxySet lbmethod=byrequests
-    </Proxy>
-    ProxyPass "/" "balancer://mycluster/"
-    ProxyPassReverse "/" "balancer://mycluster/"
-  marker: "# {mark} ANSIBLE MANAGED BLOCK"
-  insertbefore: "</VirtualHost>"
-notify: restart apache
-become: yes
+    path: /etc/apache2/sites-available/000-default.conf
+    block: |
+      <Proxy "balancer://mycluster">
+        BalancerMember http://172.31.26.143:80
+        BalancerMember http://172.31.18.71:80
+        ProxySet lbmethod=byrequests
+      </Proxy>
+      ProxyPass "/" "balancer://mycluster/"
+      ProxyPassReverse "/" "balancer://mycluster/"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    insertbefore: "</VirtualHost>"
+  notify: restart apache
+  become: yes
 
 - name: Disable Apache mods.
   file:
@@ -51,6 +52,7 @@ become: yes
   register: apache_ssl_certificates
   with_items: "{{ apache_vhosts_ssl }}"
   no_log: "{{ apache_ssl_no_log }}"
+  become: yes
 
 - name: Add apache vhosts configuration.
   template:
@@ -61,6 +63,7 @@ become: yes
     mode: 0644
   notify: restart apache
   when: apache_create_vhosts | bool
+  become: yes
 
 - name: Add vhost symlink in sites-enabled.
   file:
@@ -71,6 +74,7 @@ become: yes
     force: "{{ ansible_check_mode }}"
   notify: restart apache
   when: apache_create_vhosts | bool
+  become: yes
 
 - name: Remove default vhost in sites-enabled.
   file:
@@ -78,3 +82,4 @@ become: yes
     state: absent
   notify: restart apache
   when: apache_remove_default_vhost
+  become: yes
