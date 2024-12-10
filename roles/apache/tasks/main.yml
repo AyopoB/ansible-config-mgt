@@ -25,9 +25,11 @@
   set_fact:
     apache_packages: "{{ __apache_packages | list }}"
   when: apache_packages is not defined
+  become: yes
 
 # Setup/install tasks.
 - include_tasks: "setup-{{ ansible_os_family }}.yml"
+
 
 # Figure out what version of Apache is installed.
 - name: Get installed version of Apache.
@@ -35,10 +37,12 @@
   changed_when: false
   check_mode: false
   register: _apache_version
+  become: yes
 
 - name: Create apache_version variable.
   set_fact:
     apache_version: "{{ _apache_version.stdout.split()[2].split('/')[1] }}"
+  become: yes
 
 - name: Include Apache 2.2 variables.
   include_vars: apache-22.yml
@@ -57,6 +61,7 @@
     name: "{{ apache_service }}"
     state: "{{ apache_state }}"
     enabled: "{{ apache_enabled }}"
+  become: yes
 
 
 

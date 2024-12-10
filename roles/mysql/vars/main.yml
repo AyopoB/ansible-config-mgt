@@ -7,6 +7,6 @@ mysql_databases:
 
 mysql_users:
   - name: webaccess
-    host: "172.31.32.%"
+    host: "172.31.16.0/20"
     password: Password.1
     priv: "tooling.*:ALL"
