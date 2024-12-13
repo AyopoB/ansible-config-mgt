@@ -11,7 +11,9 @@ pipeline {
         }
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-repo/your-project.git'
+                git branch: 'main', 
+                    credentialsId: 'github-pat', // Use the ID you configured in Jenkins
+                    url: 'https://github.com/AyopoB/ansible-config-mgt.git'
             }
         }
         stage('Prepare Ansible Config') {
