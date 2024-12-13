@@ -21,7 +21,6 @@ pipeline {
                 '''
             }
         }
-        
         stage('Ansible Execution') {
             steps {
                 sh 'ansible-playbook -i inventory/dev playbook.yml'
