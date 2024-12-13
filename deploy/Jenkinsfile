@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+    environment {
+        ANSIBLE_CONFIG = "deploy/.ansible.cfg"
+    }
+    stages {
+        stage('Cleanup') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    credentialsId: 'github-pat', // Use the ID you configured in Jenkins
+                    url: 'https://github.com/AyopoB/ansible-config-mgt.git'
+            }
+        }
+        stage('Prepare Ansible Config') {
+            steps {
+                sh '''
+                    sed -i "s|roles_path.*|roles_path=/path/to/roles|" deploy/.ansible.cfg
+                '''
+            }
+        }
+        stage('Ansible Execution') {
+            steps {
+                sh 'ansible-playbook -i inventory/dev playbook.yml'
+            }
+        }
+    }
+}
