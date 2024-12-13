@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main', credentialsId: 'github-pat', // Use the ID you configured in Jenkins
-                url: 'https://github.com/your-repo/your-project.git' //comment
+                url: 'https://github.com/your-repo/your-project.git' //comment here
             }
         }
         stage('Prepare Ansible Config') {
