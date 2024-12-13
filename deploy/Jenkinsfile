@@ -1,42 +1,30 @@
-    pipeline {
+pipeline {
     agent any
-
-  stages {
-     stage("Initial cleanup") {
-      steps {
-        dir("${WORKSPACE}") {
-          deleteDir()
-        }
-      }
+    environment {
+        ANSIBLE_CONFIG = "deploy/.ansible.cfg"
     }
-
-    stage('Checkout SCM') {
-      steps {
-        git branch: 'main', credentialsId: 'gashity_token', url: 'https://github.com/AyopoB/ansible-config-mgt.git'
-      }
-    }
-      stage('Test SSH Connection') {
+    stages {
+        stage('Cleanup') {
             steps {
-                sshagent(['private_key']) {  // 'ansible' is the ID of the credentials
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.41.146 exit'
-                }
+                cleanWs()
             }
         }
-   
-
-
-    stage('Run Ansible playbook') {
-      steps {
-       ansiblePlaybook credentialsId: 'private_key', disableHostKeyChecking: true, installation: 'ansible-config-mgt', inventory: 'inventory/dev.yml', playbook: 'playbooks/site.yml', vaultTmpPath: ''
-      }
-    }
-      stage('Clean Workspace after build') {
-      steps {
-        cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenUnstable: true, deleteDirs: true)
-      }
-    }
-
-
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-repo/your-project.git'
+            }
+        }
+        stage('Prepare Ansible Config') {
+            steps {
+                sh '''
+                    sed -i "s|roles_path.*|roles_path=/path/to/roles|" deploy/.ansible.cfg
+                '''
+            }
+        }
+        stage('Ansible Execution') {
+            steps {
+                sh 'ansible-playbook -i inventory/dev playbook.yml'
+            }
+        }
     }
 }
-
