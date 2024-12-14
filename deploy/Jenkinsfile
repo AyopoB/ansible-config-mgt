@@ -38,7 +38,7 @@ pipeline {
                         [group: 'db', ip: '172.31.30.166', user: 'ubuntu']
                     ]
                     for (host in hosts) {
-                        sshagent(['private-key']) {
+                        sshagent(['ssh-ansible']) {
                             sh "ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/key.pem ${host.user}@${host.ip} exit"
                         }
                     }
@@ -48,10 +48,10 @@ pipeline {
 
         stage('Run Ansible playbook') {
             steps {
-                sshagent(['private-key']) {
+                sshagent(['ssh-ansible']) {
                     ansiblePlaybook(
                         become: true,
-                        credentialsId: 'private-key',
+                        credentialsId: 'ssh-ansible',
                         disableHostKeyChecking: true,
                         installation: 'ansible',
                         inventory: "${WORKSPACE}/inventory/dev.yml",
