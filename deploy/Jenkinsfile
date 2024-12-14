@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
           string(name: 'inventory', defaultValue: 'dev',  description: 'This is the inventory file for the environment to deploy configuration')
-          string(name: 'tags', defaultValue: '', description: 'Ansible tags to limit execution')
+          string(name: 'ansible_tags', defaultValue: 'webserver', description: 'Ansible tags to limit execution')
         }
     environment {
         ANSIBLE_CONFIG = "${WORKSPACE}/deploy/ansible.cfg"
