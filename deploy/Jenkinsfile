@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    parameters {
+          string(name: 'inventory', defaultValue: 'dev',  description: 'This is the inventory file for the environment to deploy configuration')
+        }
     environment {
         ANSIBLE_CONFIG = "${WORKSPACE}/deploy/ansible.cfg"
         ANSIBLE_HOST_KEY_CHECKING = 'False'
@@ -61,7 +63,7 @@ pipeline {
                         credentialsId: 'ssh-ansible',
                         disableHostKeyChecking: true,
                         installation: 'ansible',
-                        inventory: "${WORKSPACE}/inventory/dev.yml",
+                        inventory: "${WORKSPACE}/${inventory}",
                         playbook: "${WORKSPACE}/playbooks/site.yml"
                     )
                 }
