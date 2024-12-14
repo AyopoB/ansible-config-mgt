@@ -1,39 +1,30 @@
 pipeline {
     agent any
+    environment {
+        ANSIBLE_CONFIG = "deploy/.ansible.cfg"
+    }
     stages {
-        stage('Build') {
+        stage('Cleanup') {
             steps {
-                script {
-                    sh 'echo "Building Stage"'
-                }
+                cleanWs()
             }
         }
-        stage('Test') {
+        stage('Checkout') {
             steps {
-                script {
-                    sh 'echo "Testing Stage"'
-                }
+                git branch: 'main', credentialsId: 'github-pat', // Use the ID you configured in Jenkins
+                url: 'https://github.com/your-repo/your-project.git' //comment
             }
         }
-        stage('Package') {
+        stage('Prepare Ansible Config') {
             steps {
-                script {
-                    sh 'echo "Packaging Stage"'
-                }
+                sh '''
+                    sed -i "s|roles_path.*|roles_path=/path/to/roles|" deploy/.ansible.cfg
+                '''
             }
         }
-        stage('Deploy') {
+        stage('Ansible Execution') {
             steps {
-                script {
-                    sh 'echo "Deploying Stage"'
-                }
-            }
-        }
-        stage('Clean Up') {
-            steps {
-                script {
-                    sh 'echo "Cleaning Up Stage"'
-                }
+                sh 'ansible-playbook -i inventory/dev.yml playbooks/site.yml'
             }
         }
     }
