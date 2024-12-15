@@ -65,8 +65,8 @@ pipeline {
                         disableHostKeyChecking: true,
                         installation: 'ansible',
                         inventory: "${WORKSPACE}/inventory/${inventory}.yml",
-                        playbook: "${WORKSPACE}/playbooks/site.yml"
-                        extraVars: "ansible_tags=${params.ansible_tags}"
+                        playbook: "${WORKSPACE}/playbooks/site.yml",
+                        tags: "${params.ansible_tags}"
                     )
                 }
             }
