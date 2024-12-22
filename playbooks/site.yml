@@ -18,5 +18,7 @@
 #- import_playbook: ../static-assignments/db-servers.yml
   #tags:
    # - db
+
 - name: todo
+  hosts: todo
   import_playbook: ../static-assignments/deploytodo.yml
