@@ -2,8 +2,8 @@
 172.31.26.143 ansible_ssh_user=ec2-user
 172.31.18.71 ansible_ssh_user=ec2-user
 
-#[todo]
-#SIT-Todo-Web-Server-Private-IP-Address
+[todo]
+172.31.44.99 ansible_ssh_user=ec2-user
 
 [lb]
 172.31.18.31 ansible_ssh_user=ubuntu
