@@ -1,7 +1,7 @@
 ---
 - name: Deploying the PHP Application to Dev Environment
   become: true
-  hosts: todo
+  hosts: all
 
   tasks:
     # Install Apache

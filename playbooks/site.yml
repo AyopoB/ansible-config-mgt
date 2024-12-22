@@ -20,5 +20,4 @@
    # - db
 
 - name: todo
-  hosts: todo
   import_playbook: ../static-assignments/deploytodo.yml
