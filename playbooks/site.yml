@@ -15,7 +15,8 @@
 #  when: load_balancer_is_required
  # tags:
  #   - loadbalancer
-- import_playbook: ../static-assignments/db-servers.yml
-  tags:
-    - db
-
+#- import_playbook: ../static-assignments/db-servers.yml
+  #tags:
+   # - db
+- name: todo
+  import_playbook: ../static-assignments/deploytodo.yml
