@@ -89,6 +89,14 @@
       ansible.builtin.service:
         name: httpd
         state: started
+      
+    - name: install zip
+      remote_user: ec2-user
+      become: true
+      ansible.builtin.service:
+        name: zip
+        state: present
+        
 
     # Download the artifact
     - name: Download the artifact
