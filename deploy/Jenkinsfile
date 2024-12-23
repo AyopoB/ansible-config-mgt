@@ -38,23 +38,7 @@ pipeline {
         }
 
 
-        stage('Test SSH Connections') {
-            steps {
-                script {
-                    def hosts = [
-                        [group: 'uat-webservers', ip: '172.31.26.143', user: 'ec2-user'],
-                        [group: 'uat-webservers', ip: '172.31.18.71', user: 'ec2-user'],
-                        [group: 'lb', ip: '172.31.18.31', user: 'ubuntu'],
-                        [group: 'db', ip: '172.31.30.166', user: 'ubuntu']
-                    ]
-                    for (host in hosts) {
-                        sshagent(['ssh-ansible']) {
-                            sh "ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/key.pem ${host.user}@${host.ip} exit"
-                        }
-                    }
-                }
-            }
-        }
+       
 
         stage('Run Ansible playbook') {
             steps {

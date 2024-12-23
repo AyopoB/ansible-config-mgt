@@ -93,10 +93,10 @@
     - name: install zip
       remote_user: ec2-user
       become: true
-      ansible.builtin.service:
+      ansible.builtin.yum:
         name: zip
         state: present
-        
+
 
     # Download the artifact
     - name: Download the artifact
@@ -127,7 +127,7 @@
       remote_user: ec2-user
       become: true
       ansible.builtin.copy:
-        src:  /home/ec2-user/var/lib/jenkins/workspace/php-pipeline/.
+        src:  /home/ec2-user/var/lib/jenkins/workspace/php-todo_main@2/.
         dest: /var/www/html/
         force: yes
         remote_src: yes
